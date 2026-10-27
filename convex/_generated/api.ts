@@ -8,6 +8,8 @@
  * @module
  */
 
+import type * as tasks from "../tasks.js";
+
 import type {
   ApiFromModules,
   FilterApi,
@@ -15,7 +17,9 @@ import type {
 } from "convex/server";
 import { anyApi, componentsGeneric } from "convex/server";
 
-const fullApi: ApiFromModules<{}> = anyApi as any;
+const fullApi: ApiFromModules<{
+  tasks: typeof tasks;
+}> = anyApi as any;
 
 /**
  * A utility for referencing Convex functions in your app's public API.

@@ -1,10 +1,10 @@
-import { AsyncMultiCombobox } from '@/registry/components/async-multi-combobox'
+import { TasksList } from './tasks-list'
 
-export default async function Home() {
-  // const data = await fetch('https://api.vercel.app/blog')
-  // const posts = await data.json()
-
+export default function Home() {
   return (
-    <div className="dev flex flex-1 items-center justify-center">Hello</div>
+    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 p-8">
+      <h1 className="text-2xl font-semibold">Convex tasks</h1>
+      <TasksList />
+    </main>
   )
 }

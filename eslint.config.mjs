@@ -1,12 +1,10 @@
 import convexPlugin from '@convex-dev/eslint-plugin'
 import { plugin as shadcn } from '@shadcn/lint'
-import pluginQuery from '@tanstack/eslint-plugin-query'
 import nextVitals from 'eslint-config-next/core-web-vitals'
 import nextTs from 'eslint-config-next/typescript'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 const eslintConfig = defineConfig([
-  ...pluginQuery.configs['flat/recommended'],
   ...nextVitals,
   ...nextTs,
   {

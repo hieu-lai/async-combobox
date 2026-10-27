@@ -2,6 +2,25 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+### Convex integration demo
+
+The home page subscribes to `api.tasks.list` with Convex's `useQuery` hook.
+Tasks have `text` and `isCompleted` fields, and the query returns the newest
+100 tasks. Update either field in the Convex dashboard to see live updates.
+
+With the existing development deployment configured in `.env.local`, push the
+schema and functions, then seed 12 sample tasks:
+
+```bash
+bunx convex dev --once
+bunx convex run tasks:seed
+bunx convex run tasks:list
+```
+
+The seed is internal (CLI only) and safe to run again: it skips existing sample
+tasks without changing their completion state. Use `bunx convex dev` while
+editing backend functions to keep the development deployment in sync.
+
 First, run the development server:
 
 ```bash
