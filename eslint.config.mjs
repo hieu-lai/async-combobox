@@ -1,18 +1,27 @@
-import { defineConfig, globalIgnores } from "eslint/config";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
+import convexPlugin from '@convex-dev/eslint-plugin'
+import { plugin as shadcn } from '@shadcn/lint'
+import pluginQuery from '@tanstack/eslint-plugin-query'
+import nextVitals from 'eslint-config-next/core-web-vitals'
+import nextTs from 'eslint-config-next/typescript'
+import { defineConfig, globalIgnores } from 'eslint/config'
 
 const eslintConfig = defineConfig([
+  ...pluginQuery.configs['flat/recommended'],
   ...nextVitals,
   ...nextTs,
+  {
+    files: ['**/*.{js,ts,tsx}'],
+    plugins: { shadcn },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
+    '.next/**',
+    'out/**',
+    'build/**',
+    'next-env.d.ts',
   ]),
-]);
+  ...convexPlugin.configs.recommended,
+])
 
-export default eslintConfig;
+export default eslintConfig

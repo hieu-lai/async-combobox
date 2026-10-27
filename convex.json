@@ -1,0 +1,8 @@
+{
+  "node": {
+    "nodeVersion": "24"
+  },
+  "codegen": {
+    "fileType": "ts"
+  }
+}
