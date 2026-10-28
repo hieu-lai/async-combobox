@@ -8,6 +8,8 @@
  * @module
  */
 
+import type * as migrations from "../migrations.js";
+import type * as pokemon from "../pokemon.js";
 import type * as tasks from "../tasks.js";
 
 import type {
@@ -18,6 +20,8 @@ import type {
 import { anyApi, componentsGeneric } from "convex/server";
 
 const fullApi: ApiFromModules<{
+  migrations: typeof migrations;
+  pokemon: typeof pokemon;
   tasks: typeof tasks;
 }> = anyApi as any;
 
@@ -47,4 +51,6 @@ export const internal: FilterApi<
   FunctionReference<any, "internal">
 > = anyApi as any;
 
-export const components = componentsGeneric() as unknown as {};
+export const components = componentsGeneric() as unknown as {
+  migrations: import("@convex-dev/migrations/_generated/component.js").ComponentApi<"migrations">;
+};

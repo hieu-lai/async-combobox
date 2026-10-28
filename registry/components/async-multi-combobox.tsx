@@ -12,6 +12,7 @@ import {
   useComboboxAnchor,
 } from '@/components/ui/combobox'
 import { InputGroupAddon } from '@/components/ui/input-group'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
 import { useState } from 'react'
 import type { ReactNode } from 'react'
@@ -21,31 +22,40 @@ type InfiniteListProps<T> = {
   dataLength: number
   hasMore: boolean
   onLoadMore: () => void
+  isLoading: boolean
+  isLoadingMore: boolean
   itemToStringLabel: (item: T) => string
   itemToStringValue: (item: T) => string
   renderItem?: (item: T) => ReactNode
+  renderLoading?: () => ReactNode
+  renderLoadingMore?: () => ReactNode
 }
 
 function InfiniteComboboxList<T>({
   dataLength,
   hasMore,
   onLoadMore,
+  isLoading,
+  isLoadingMore,
   itemToStringLabel,
   itemToStringValue,
   renderItem,
+  renderLoading,
+  renderLoadingMore,
 }: InfiniteListProps<T>) {
   const [list, setList] = useState<HTMLDivElement | null>(null)
+  const canLoadMore = hasMore && !isLoading && !isLoadingMore
 
   const { sentinelRef } = useInfiniteScroll({
     dataLength,
-    hasMore: hasMore && list !== null,
+    hasMore: canLoadMore && list !== null,
     next: onLoadMore,
     scrollableTarget: list,
     scrollThreshold: '0px',
   })
 
   return (
-    <ComboboxList ref={setList}>
+    <ComboboxList ref={setList} aria-busy={isLoading || isLoadingMore}>
       <ComboboxCollection>
         {(item: T) =>
           renderItem ? (
@@ -57,7 +67,25 @@ function InfiniteComboboxList<T>({
           )
         }
       </ComboboxCollection>
-      {hasMore && <div ref={sentinelRef} aria-hidden="true" className="h-px" />}
+      {isLoading &&
+        dataLength === 0 &&
+        (renderLoading ? (
+          renderLoading()
+        ) : (
+          <div aria-hidden="true" className="p-1">
+            {['h-3.5 w-16', 'h-3.5 w-20', 'h-3.5 w-22', 'h-3.5 w-16'].map(
+              (className, index) => (
+                <div key={index} className="flex h-7 items-center px-1.5">
+                  <Skeleton className={className} />
+                </div>
+              ),
+            )}
+          </div>
+        ))}
+      {!isLoading && isLoadingMore && renderLoadingMore?.()}
+      {canLoadMore && (
+        <div ref={sentinelRef} aria-hidden="true" className="h-px" />
+      )}
     </ComboboxList>
   )
 }
@@ -73,13 +101,23 @@ type Props<T> = {
   onLoadMore: () => void
   inputValue: string
   onInputValueChange: (value: string) => void
+  /** Loading the first page or results for a new search. Keeps supplied items visible. */
   isLoading?: boolean
+  /** Loading another page. Keeps existing options visible. */
+  isLoadingMore?: boolean
   disabled?: boolean
   placeholder?: string
+  className?: string
   /** Render a custom ComboboxItem with a stable key and value={item}. */
   renderItem?: (item: T) => ReactNode
   /** Render a custom ComboboxChip with a stable key. */
   renderChip?: (item: T) => ReactNode
+  /** Render a custom ComboboxEmpty. Defaults to "No items found." */
+  renderEmpty?: () => ReactNode
+  /** Render loading content when no items are available. Defaults to skeleton rows. */
+  renderLoading?: () => ReactNode
+  /** Render non-selectable content after the options when loading another page. Defaults to nothing. */
+  renderLoadingMore?: () => ReactNode
 }
 
 export function AsyncMultiCombobox<T>({
@@ -94,10 +132,15 @@ export function AsyncMultiCombobox<T>({
   inputValue,
   onInputValueChange,
   isLoading = false,
+  isLoadingMore = false,
   disabled = false,
   placeholder,
+  className,
   renderItem,
   renderChip,
+  renderEmpty,
+  renderLoading,
+  renderLoadingMore,
 }: Props<T>) {
   const anchor = useComboboxAnchor()
 
@@ -115,7 +158,7 @@ export function AsyncMultiCombobox<T>({
       onInputValueChange={onInputValueChange}
       filter={null}
     >
-      <ComboboxChips ref={anchor}>
+      <ComboboxChips ref={anchor} className={className}>
         <ComboboxValue>
           {value.map((item) =>
             renderChip ? (
@@ -128,21 +171,33 @@ export function AsyncMultiCombobox<T>({
           )}
         </ComboboxValue>
         <ComboboxChipsInput placeholder={placeholder} />
-        {isLoading && (
-          <InputGroupAddon align="inline-end" className="ml-auto shrink-0 p-0">
-            <Spinner />
-          </InputGroupAddon>
-        )}
+        {/* Reserve the spinner's space so loading does not resize the anchor. */}
+        <InputGroupAddon
+          align="inline-end"
+          className="ml-auto w-4 shrink-0 p-0"
+        >
+          {(isLoading || isLoadingMore) && <Spinner />}
+        </InputGroupAddon>
       </ComboboxChips>
       <ComboboxContent anchor={anchor}>
-        <ComboboxEmpty>No items found.</ComboboxEmpty>
+        {!isLoading &&
+          !isLoadingMore &&
+          (renderEmpty ? (
+            renderEmpty()
+          ) : (
+            <ComboboxEmpty>No items found.</ComboboxEmpty>
+          ))}
         <InfiniteComboboxList
           dataLength={items.length}
           hasMore={hasMore}
           onLoadMore={onLoadMore}
+          isLoading={isLoading}
+          isLoadingMore={isLoadingMore}
           itemToStringLabel={itemToStringLabel}
           itemToStringValue={itemToStringValue}
           renderItem={renderItem}
+          renderLoading={renderLoading}
+          renderLoadingMore={renderLoadingMore}
         />
       </ComboboxContent>
     </Combobox>
