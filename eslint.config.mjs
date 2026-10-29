@@ -18,6 +18,8 @@ const eslintConfig = defineConfig([
     'out/**',
     'build/**',
     'next-env.d.ts',
+    // Convex regenerates these files with its own lint directives.
+    'convex/_generated/**',
   ]),
   ...convexPlugin.configs.recommended,
 ])
