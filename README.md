@@ -2,6 +2,29 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+### Component previews
+
+`ComponentPreview` pairs a live example with syntax-highlighted, numbered source
+code. The source starts as a faded teaser; **View Code** expands it and exposes
+the floating copy and collapse buttons. Use the collapse icon beside the copy
+button to hide the code again.
+
+```tsx
+import { ComponentPreview } from '@/components/component-preview'
+
+<ComponentPreview code={source} language="tsx" filename="example.tsx">
+  <YourExample />
+</ComponentPreview>
+```
+
+Pass any preview content as `children` and its source as a string in `code`.
+`language` defaults to `tsx`; unsupported languages render as plain text.
+Use `defaultExpanded` to start open, `highlightedLines={[3, 4]}` to emphasize
+source lines (numbered from 1), `previewClassName` to adjust the preview layout,
+and `className` for the outer card. Each instance manages its own disclosure
+state and accessible source-region ID. The home page reads the example file on
+the server so the displayed source stays in sync with the live demo.
+
 ### Custom combobox loading content
 
 `AsyncMultiCombobox` has two loading states:
