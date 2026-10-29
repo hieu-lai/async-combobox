@@ -14,9 +14,9 @@ import {
 import { InputGroupAddon } from '@/components/ui/input-group'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
+import { useInfiniteScroll } from '@/registry/hooks/use-infinite-scroll'
 import { useState } from 'react'
 import type { ReactNode } from 'react'
-import { useInfiniteScroll } from 'react-infinite-scroll-component'
 
 type InfiniteListProps<T> = {
   dataLength: number
