@@ -4,23 +4,32 @@ import { Button } from '@/components/ui/button'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 
+import { CustomExample } from './custom-example'
+import { CustomMultiExample } from './custom-multi-example'
+import { DisabledExample } from './disabled-example'
 import { Installation } from './installation'
-import { CustomValueExample } from './custom-value-example'
+import { InvalidExample } from './invalid-example'
 import { MultiExample } from './multi-example'
 import { SingleExample } from './single-example'
 
 export default async function Home() {
   'use cache'
 
-  const [singleExampleCode, multiExampleCode, customValueExampleCode] =
-    await Promise.all([
-      readFile(path.join(process.cwd(), 'app/single-example.tsx'), 'utf8'),
-      readFile(path.join(process.cwd(), 'app/multi-example.tsx'), 'utf8'),
-      readFile(
-        path.join(process.cwd(), 'app/custom-value-example.tsx'),
-        'utf8',
-      ),
-    ])
+  const [
+    singleExampleCode,
+    multiExampleCode,
+    customValueExampleCode,
+    customMultiExampleCode,
+    disabledExampleCode,
+    invalidExampleCode,
+  ] = await Promise.all([
+    readFile(path.join(process.cwd(), 'app/single-example.tsx'), 'utf8'),
+    readFile(path.join(process.cwd(), 'app/multi-example.tsx'), 'utf8'),
+    readFile(path.join(process.cwd(), 'app/custom-example.tsx'), 'utf8'),
+    readFile(path.join(process.cwd(), 'app/custom-multi-example.tsx'), 'utf8'),
+    readFile(path.join(process.cwd(), 'app/disabled-example.tsx'), 'utf8'),
+    readFile(path.join(process.cwd(), 'app/invalid-example.tsx'), 'utf8'),
+  ])
 
   return (
     <main className="flex flex-1">
@@ -51,11 +60,17 @@ export default async function Home() {
         </ComponentExample>
         <ComponentExample
           id="custom-value"
-          title="Custom items and selected value"
-          description="Customize options with Pokémon avatars and type icons using renderItem, and show the selected Pokémon’s avatar and name using renderValue."
+          title="Custom Items and Value"
+          description={
+            <>
+              Use <code>renderItem</code> to render custom items inside{' '}
+              <code>ComboboxContent</code>, and <code>renderValue</code> to show
+              the custom selected value.
+            </>
+          }
           code={customValueExampleCode}
         >
-          <CustomValueExample />
+          <CustomExample />
         </ComponentExample>
         <ComponentExample
           id="multiple"
@@ -69,6 +84,45 @@ export default async function Home() {
           code={multiExampleCode}
         >
           <MultiExample />
+        </ComponentExample>
+        <ComponentExample
+          id="custom-multiple"
+          title="Multiple with Custom Items and Chips"
+          description={
+            <>
+              Use <code>renderItem</code> and <code>renderChip</code> to show
+              Pokémon avatars in the options and selected chips, with the same
+              custom loaders as the single-selection example.
+            </>
+          }
+          code={customMultiExampleCode}
+        >
+          <CustomMultiExample />
+        </ComponentExample>
+        <ComponentExample
+          id="disabled"
+          title="Disabled"
+          description={
+            <>
+              Use the <code>disabled</code> prop to disable the combobox.
+            </>
+          }
+          code={disabledExampleCode}
+        >
+          <DisabledExample />
+        </ComponentExample>
+        <ComponentExample
+          id="invalid"
+          title="Invalid"
+          description={
+            <>
+              Use the <code>aria-invalid</code> prop to make the combobox
+              invalid.
+            </>
+          }
+          code={invalidExampleCode}
+        >
+          <InvalidExample />
         </ComponentExample>
       </div>
     </main>

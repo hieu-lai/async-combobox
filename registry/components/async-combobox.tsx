@@ -14,12 +14,12 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useInfiniteScroll } from '@/registry/hooks/use-infinite-scroll'
 import { cn } from 'cn'
 import { useLayoutEffect, useRef, useState } from 'react'
-import type { ReactNode } from 'react'
+import type { AriaAttributes, ReactNode } from 'react'
 
 type InfiniteListProps<T> = {
   dataLength: number
   hasMore: boolean
-  onLoadMore: () => void
+  onLoadMore?: () => void
   isLoading: boolean
   isLoadingMore: boolean
   itemToStringLabel: (item: T) => string
@@ -42,12 +42,13 @@ function InfiniteComboboxList<T>({
   renderLoadingMore,
 }: InfiniteListProps<T>) {
   const [list, setList] = useState<HTMLDivElement | null>(null)
-  const canLoadMore = hasMore && !isLoading && !isLoadingMore
+  const canLoadMore =
+    hasMore && onLoadMore != null && !isLoading && !isLoadingMore
 
   const { sentinelRef } = useInfiniteScroll({
     dataLength,
     hasMore: canLoadMore && list !== null,
-    next: onLoadMore,
+    next: () => onLoadMore?.(),
     scrollableTarget: list,
     scrollThreshold: '0px',
   })
@@ -89,21 +90,23 @@ function InfiniteComboboxList<T>({
 }
 
 type Props<T> = {
-  items: Array<T>
+  items?: Array<T>
   value?: T
   onValueChange?: (value: T | undefined) => void
   itemToStringLabel?: (item: T) => string
   itemToStringValue?: (item: T) => string
   isItemEqualToValue?: (item: T, value: T) => boolean
   /** Search term changes from editing or clearing. Selection resets it to an empty string. */
-  onQueryChange: (query: string) => void
-  hasMore: boolean
-  onLoadMore: () => void
+  onQueryChange?: (query: string) => void
+  hasMore?: boolean
+  onLoadMore?: () => void
   /** Loading the first page or results for a new search. Keeps supplied items visible. */
   isLoading?: boolean
   /** Loading another page. Keeps existing options visible. */
   isLoadingMore?: boolean
   disabled?: boolean
+  /** Mark the input invalid and apply the destructive border and ring. */
+  'aria-invalid'?: AriaAttributes['aria-invalid']
   placeholder?: string
   /** Classes for the field wrapper, including width utilities such as w-64 or max-w-xs. */
   className?: string
@@ -124,17 +127,18 @@ type Props<T> = {
 }
 
 export function AsyncCombobox<T>({
-  items,
+  items = [],
   value,
   onValueChange,
   itemToStringLabel = String,
   itemToStringValue = itemToStringLabel,
   isItemEqualToValue,
-  hasMore,
+  hasMore = false,
   onLoadMore,
   isLoading = false,
   isLoadingMore = false,
   disabled = false,
+  'aria-invalid': ariaInvalid,
   placeholder,
   className,
   showClear = true,
@@ -182,7 +186,7 @@ export function AsyncCombobox<T>({
     changeEditing(false)
     if (queryRef.current !== '') {
       queryRef.current = ''
-      onQueryChange('')
+      onQueryChange?.('')
     }
   }
 
@@ -199,7 +203,8 @@ export function AsyncCombobox<T>({
             return
           }
           changeEditing(
-            details.reason === 'clear-press' || details.reason === 'input-clear',
+            details.reason === 'clear-press' ||
+              details.reason === 'input-clear',
           )
           queryRef.current = ''
         }
@@ -208,7 +213,7 @@ export function AsyncCombobox<T>({
           nextValue != null ||
           (renderValue && details.reason === 'clear-press')
         ) {
-          onQueryChange('')
+          onQueryChange?.('')
         }
       }}
       itemToStringLabel={itemToStringLabel}
@@ -228,7 +233,7 @@ export function AsyncCombobox<T>({
           } else if (details.reason === 'input-change') {
             changeEditing(true)
             queryRef.current = text
-            onQueryChange(text)
+            onQueryChange?.(text)
           }
           return
         }
@@ -237,7 +242,7 @@ export function AsyncCombobox<T>({
           details.reason === 'input-clear' ||
           details.reason === 'clear-press'
         ) {
-          onQueryChange(text)
+          onQueryChange?.(text)
         }
       }}
       onOpenChange={(open) => {
@@ -251,6 +256,7 @@ export function AsyncCombobox<T>({
         id={id}
         placeholder={placeholder}
         disabled={disabled}
+        aria-invalid={ariaInvalid}
         className={cn(className, showRichValue && '[&>input]:opacity-0')}
         showClear={showClear}
         isLoading={isLoading || isLoadingMore}

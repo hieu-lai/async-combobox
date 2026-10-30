@@ -36,6 +36,18 @@ field width automatically.
 
 Use `w-64` for a fixed width or `w-full` to fill the available width.
 
+### Combobox invalid state
+
+Pass `aria-invalid` to either async combobox to mark its input invalid and show
+the destructive border and ring, following the
+[shadcn invalid example](https://ui.shadcn.com/docs/components/base/combobox#invalid).
+Omit it or pass `false` for the normal state.
+
+```tsx
+<AsyncCombobox {...props} aria-invalid={hasError} />
+<AsyncMultiCombobox {...multiProps} aria-invalid={hasError} />
+```
+
 ### Custom single-select content
 
 Pass `renderValue` to `AsyncCombobox` to customize the selected content independently

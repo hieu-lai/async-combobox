@@ -34,7 +34,7 @@ export function SingleExample() {
       isLoading={isLoading && !isLoadingMore}
       isLoadingMore={isLoadingMore}
       onLoadMore={() => loadMore(10)}
-      placeholder="Select a pokemon"
+      placeholder="Select a Pokémon"
     />
   )
 }

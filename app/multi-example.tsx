@@ -34,6 +34,7 @@ export function MultiExample() {
       hasMore={status === 'CanLoadMore'}
       isLoading={isLoading && !isLoadingMore}
       isLoadingMore={isLoadingMore}
+      className="w-full max-w-xs"
       renderLoadingMore={() =>
         ['h-3.5 w-16', 'h-3.5 w-20'].map((className, index) => (
           <div key={index} className="flex h-7 items-center px-1.5">
@@ -44,7 +45,7 @@ export function MultiExample() {
       onLoadMore={() => {
         if (!isLoading) loadMore(10)
       }}
-      placeholder="Add pokemon"
+      placeholder="Select Pokémon"
     />
   )
 }

@@ -16,12 +16,12 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
 import { useInfiniteScroll } from '@/registry/hooks/use-infinite-scroll'
 import { useState } from 'react'
-import type { ReactNode } from 'react'
+import type { AriaAttributes, ReactNode } from 'react'
 
 type InfiniteListProps<T> = {
   dataLength: number
   hasMore: boolean
-  onLoadMore: () => void
+  onLoadMore?: () => void
   isLoading: boolean
   isLoadingMore: boolean
   itemToStringLabel: (item: T) => string
@@ -44,12 +44,13 @@ function InfiniteComboboxList<T>({
   renderLoadingMore,
 }: InfiniteListProps<T>) {
   const [list, setList] = useState<HTMLDivElement | null>(null)
-  const canLoadMore = hasMore && !isLoading && !isLoadingMore
+  const canLoadMore =
+    hasMore && onLoadMore != null && !isLoading && !isLoadingMore
 
   const { sentinelRef } = useInfiniteScroll({
     dataLength,
     hasMore: canLoadMore && list !== null,
-    next: onLoadMore,
+    next: () => onLoadMore?.(),
     scrollableTarget: list,
     scrollThreshold: '0px',
   })
@@ -91,21 +92,23 @@ function InfiniteComboboxList<T>({
 }
 
 type Props<T> = {
-  items: Array<T>
-  value: Array<T>
+  items?: Array<T>
+  value?: Array<T>
   onValueChange?: (value: Array<T>) => void
   itemToStringLabel?: (item: T) => string
   itemToStringValue?: (item: T) => string
   isItemEqualToValue?: (item: T, value: T) => boolean
-  hasMore: boolean
-  onLoadMore: () => void
-  inputValue: string
-  onInputValueChange: (value: string) => void
+  hasMore?: boolean
+  onLoadMore?: () => void
+  inputValue?: string
+  onInputValueChange?: (value: string) => void
   /** Loading the first page or results for a new search. Keeps supplied items visible. */
   isLoading?: boolean
   /** Loading another page. Keeps existing options visible. */
   isLoadingMore?: boolean
   disabled?: boolean
+  /** Mark the input invalid and apply the destructive border and ring. */
+  'aria-invalid'?: AriaAttributes['aria-invalid']
   placeholder?: string
   className?: string
   /** Render a custom ComboboxItem with a stable key and value={item}. */
@@ -121,19 +124,20 @@ type Props<T> = {
 }
 
 export function AsyncMultiCombobox<T>({
-  items,
+  items = [],
   value,
   onValueChange,
   itemToStringLabel = String,
   itemToStringValue = itemToStringLabel,
   isItemEqualToValue,
-  hasMore,
+  hasMore = false,
   onLoadMore,
   inputValue,
   onInputValueChange,
   isLoading = false,
   isLoadingMore = false,
   disabled = false,
+  'aria-invalid': ariaInvalid,
   placeholder,
   className,
   renderItem,
@@ -160,17 +164,22 @@ export function AsyncMultiCombobox<T>({
     >
       <ComboboxChips ref={anchor} className={className}>
         <ComboboxValue>
-          {value.map((item) =>
-            renderChip ? (
-              renderChip(item)
-            ) : (
-              <ComboboxChip key={itemToStringValue(item)}>
-                {itemToStringLabel(item)}
-              </ComboboxChip>
-            ),
-          )}
+          {(selectedValue: Array<T>) =>
+            selectedValue.map((item) =>
+              renderChip ? (
+                renderChip(item)
+              ) : (
+                <ComboboxChip key={itemToStringValue(item)}>
+                  {itemToStringLabel(item)}
+                </ComboboxChip>
+              ),
+            )
+          }
         </ComboboxValue>
-        <ComboboxChipsInput placeholder={placeholder} />
+        <ComboboxChipsInput
+          placeholder={placeholder}
+          aria-invalid={ariaInvalid}
+        />
         {/* Reserve the spinner's space so loading does not resize the anchor. */}
         <InputGroupAddon
           align="inline-end"
