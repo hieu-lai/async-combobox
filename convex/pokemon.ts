@@ -38,6 +38,42 @@ export const simple = query({
   },
 })
 
+export const rich = query({
+  args: {
+    query: v.string(),
+    paginationOpts: paginationOptsValidator,
+  },
+  returns: paginationResultValidator(
+    schema.doc('pokemon').pick('_id', 'displayName', 'id', 'image', 'types'),
+  ),
+  handler: async (ctx, args) => {
+    const searchText = args.query.trim()
+
+    const result = searchText
+      ? await ctx.db
+          .query('pokemon')
+          .withSearchIndex('search_searchText', (q) =>
+            q.search('searchText', searchText),
+          )
+          .paginate(args.paginationOpts)
+      : await ctx.db
+          .query('pokemon')
+          .withIndex('by_pokemon_id')
+          .paginate(args.paginationOpts)
+
+    return {
+      ...result,
+      page: result.page.map(({ _id, displayName, id, image, types }) => ({
+        _id,
+        displayName,
+        id,
+        image,
+        types,
+      })),
+    }
+  },
+})
+
 // CLI only. A single transaction imports the complete cached Gen 1 dataset.
 export const seed = internalMutation({
   args: {},

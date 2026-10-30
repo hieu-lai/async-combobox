@@ -22,6 +22,7 @@ export function SingleExample() {
 
   return (
     <AsyncCombobox
+      className="w-full max-w-xs"
       onQueryChange={setQuery}
       items={results}
       value={value}

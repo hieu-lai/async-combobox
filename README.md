@@ -25,6 +25,50 @@ and `className` for the outer card. Each instance manages its own disclosure
 state and accessible source-region ID. The home page reads the example file on
 the server so the displayed source stays in sync with the live demo.
 
+### Combobox width
+
+Use `className` to set the `AsyncCombobox` field width. The dropdown follows the
+field width automatically.
+
+```tsx
+<AsyncCombobox {...props} className="w-full max-w-xs" />
+```
+
+Use `w-64` for a fixed width or `w-full` to fill the available width.
+
+### Custom single-select content
+
+Pass `renderValue` to `AsyncCombobox` to customize the selected content independently
+of the dropdown's `renderItem`. Keep it single-line and non-interactive; use
+`truncate` on text inside flex layouts. The field retains its normal height.
+
+```tsx
+<AsyncCombobox
+  {...props}
+  itemToStringLabel={(person) => person.name}
+  renderValue={(person) => (
+    <span className="flex min-w-0 items-center gap-2">
+      <span className="truncate">{person.name}</span>
+      <span className="text-muted-foreground shrink-0">{person.role}</span>
+    </span>
+  )}
+/>
+```
+
+Focusing the field shows its plain label with all text selected, ready to copy or
+replace. Focus alone does not emit a search query. Typing a nonempty query searches
+without changing the committed selection. Deleting all input text or pressing
+Clear removes the selection immediately and leaves an empty, focused input;
+Escape does not undo it. Selecting an option commits it and restores rich content.
+Escape or leaving the field discards an unfinished search, resets the query, and
+restores any remaining selected content. After choosing or cancelling, clicking
+or typing starts editing again.
+
+Rich content is hidden from assistive technologies; the native input retains the
+plain label from `itemToStringLabel`. Connect a visible external label with `id`,
+as with the plain-text variant. Omitting `renderValue` preserves existing behavior.
+See `app/custom-value-example.tsx` for a standalone example.
+
 ### Custom combobox loading content
 
 `AsyncMultiCombobox` has two loading states:

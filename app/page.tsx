@@ -5,16 +5,22 @@ import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import { Installation } from './installation'
+import { CustomValueExample } from './custom-value-example'
 import { MultiExample } from './multi-example'
 import { SingleExample } from './single-example'
 
 export default async function Home() {
   'use cache'
 
-  const [singleExampleCode, multiExampleCode] = await Promise.all([
-    readFile(path.join(process.cwd(), 'app/single-example.tsx'), 'utf8'),
-    readFile(path.join(process.cwd(), 'app/multi-example.tsx'), 'utf8'),
-  ])
+  const [singleExampleCode, multiExampleCode, customValueExampleCode] =
+    await Promise.all([
+      readFile(path.join(process.cwd(), 'app/single-example.tsx'), 'utf8'),
+      readFile(path.join(process.cwd(), 'app/multi-example.tsx'), 'utf8'),
+      readFile(
+        path.join(process.cwd(), 'app/custom-value-example.tsx'),
+        'utf8',
+      ),
+    ])
 
   return (
     <main className="flex flex-1">
@@ -42,6 +48,14 @@ export default async function Home() {
           code={singleExampleCode}
         >
           <SingleExample />
+        </ComponentExample>
+        <ComponentExample
+          id="custom-value"
+          title="Custom items and selected value"
+          description="Customize options with Pokémon avatars and type icons using renderItem, and show the selected Pokémon’s avatar and name using renderValue."
+          code={customValueExampleCode}
+        >
+          <CustomValueExample />
         </ComponentExample>
         <ComponentExample
           id="multiple"
