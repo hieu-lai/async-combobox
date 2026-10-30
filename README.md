@@ -1,216 +1,192 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Async Combobox
 
-## Getting Started
+Async single- and multi-select React comboboxes with search, infinite scrolling,
+and customizable content. Built with Base UI, shadcn/ui, TypeScript, and Tailwind CSS.
 
-### Component previews
+Bring your own fetcher. The components receive items and loading state through
+props and emit search and pagination callbacks. Use native `fetch`, an API client,
+or your preferred data-fetching hook.
 
-`ComponentPreview` pairs a live example with syntax-highlighted, numbered source
-code. The source starts as a faded teaser; **View Code** expands it and exposes
-the floating copy and collapse buttons. Use the collapse icon beside the copy
-button to hide the code again.
+## Features
 
-```tsx
-import { ComponentPreview } from '@/components/component-preview'
+- Single selection with a clear button, or multiple selection with removable chips.
+- Async search and infinite scrolling with a configurable load-more threshold.
+- Separate loading states for new searches and additional pages.
+- Custom option content, selected values, chips, loaders, and empty states.
+- Keyboard navigation through Base UI, plus disabled and invalid states.
+- Live examples with viewable, copyable source code in the demo app.
 
-<ComponentPreview code={source} language="tsx" filename="example.tsx">
-  <YourExample />
-</ComponentPreview>
-```
+## Installation
 
-Pass any preview content as `children` and its source as a string in `code`.
-`language` defaults to `tsx`; unsupported languages render as plain text.
-Use `defaultExpanded` to start open, `highlightedLines={[3, 4]}` to emphasize
-source lines (numbered from 1), `previewClassName` to adjust the preview layout,
-and `className` for the outer card. Each instance manages its own disclosure
-state and accessible source-region ID. The home page reads the example file on
-the server so the displayed source stays in sync with the live demo.
-
-### Combobox width
-
-Use `className` to set the `AsyncCombobox` field width. The dropdown follows the
-field width automatically.
-
-```tsx
-<AsyncCombobox {...props} className="w-full max-w-xs" />
-```
-
-Use `w-64` for a fixed width or `w-full` to fill the available width.
-
-### Combobox scroll threshold
-
-Pass `scrollThreshold` to either async combobox to control when `onLoadMore`
-fires. It accepts a fraction from 0 to 1 (such as `0.8`), a percentage string
-(such as `'80%'`), or a pixel distance before the end (such as `'100px'`).
-The default is `'0px'`, which loads when the end of the list becomes visible.
-
-```tsx
-<AsyncCombobox {...props} scrollThreshold="100px" />
-<AsyncMultiCombobox {...multiProps} scrollThreshold="100px" />
-```
-
-### Combobox invalid state
-
-Pass `aria-invalid` to either async combobox to mark its input invalid and show
-the destructive border and ring, following the
-[shadcn invalid example](https://ui.shadcn.com/docs/components/base/combobox#invalid).
-Omit it or pass `false` for the normal state.
-
-```tsx
-<AsyncCombobox {...props} aria-invalid={hasError} />
-<AsyncMultiCombobox {...multiProps} aria-invalid={hasError} />
-```
-
-### Custom single-select content
-
-Pass `renderValue` to `AsyncCombobox` to customize the selected content independently
-of the dropdown's `renderItem`. Keep it single-line and non-interactive; use
-`truncate` on text inside flex layouts. The field retains its normal height.
-
-```tsx
-<AsyncCombobox
-  {...props}
-  itemToStringLabel={(person) => person.name}
-  renderValue={(person) => (
-    <span className="flex min-w-0 items-center gap-2">
-      <span className="truncate">{person.name}</span>
-      <span className="text-muted-foreground shrink-0">{person.role}</span>
-    </span>
-  )}
-/>
-```
-
-Focusing the field shows its plain label with all text selected, ready to copy or
-replace. Focus alone does not emit a search query. Typing a nonempty query searches
-without changing the committed selection. Deleting all input text or pressing
-Clear removes the selection immediately and leaves an empty, focused input;
-Escape does not undo it. Selecting an option commits it and restores rich content.
-Escape or leaving the field discards an unfinished search, resets the query, and
-restores any remaining selected content. After choosing or cancelling, clicking
-or typing starts editing again.
-
-Rich content is hidden from assistive technologies; the native input retains the
-plain label from `itemToStringLabel`. Connect a visible external label with `id`,
-as with the plain-text variant. Omitting `renderValue` preserves existing behavior.
-See `app/custom-value-example.tsx` for a standalone example.
-
-### Custom combobox loading content
-
-`AsyncMultiCombobox` has two loading states:
-
-- `isLoading` marks the first page or a new search as loading, keeping supplied
-  options visible. Loading content appears only when there are no supplied items.
-- `isLoadingMore` keeps options visible while loading another page.
-
-The combobox always renders the supplied `items` and does not cache results.
-Your data hook controls retention: keep passing previous results to preserve
-them, or pass an empty array while loading to replace them with loading content.
-The demo retains previous results with `usePaginatedQueryWithPreviousData`.
-
-Provide non-selectable loading content using `renderLoading` and
-`renderLoadingMore`. By default, `renderLoading` shows skeleton rows and
-`renderLoadingMore` renders nothing. Return `null` to hide loading content in
-the list. The input still shows its loading spinner.
-
-```tsx
-<AsyncMultiCombobox
-  {...props}
-  isLoading={isLoadingNew}
-  isLoadingMore={isLoadingNextPage}
-  renderLoading={() => <div role="status">Searching…</div>}
-  renderLoadingMore={() => <div role="status">Fetching more results…</div>}
-/>
-```
-
-Loading content remains visible even if `hasMore` is false during the request.
-Both states suppress the empty message and pause infinite scrolling. If both
-flags are true, `isLoading` takes precedence. Selected chips remain visible.
-
-### Custom combobox empty state
-
-Use `renderEmpty` to return a custom `ComboboxEmpty` imported from
-`@/components/ui/combobox`. Omitting it keeps the default “No items found.”
-message. Both loading states suppress the empty state. Return `null` to hide it
-entirely.
-
-```tsx
-<AsyncMultiCombobox
-  {...props}
-  renderEmpty={() => <ComboboxEmpty>No matching Pokémon.</ComboboxEmpty>}
-/>
-```
-
-### Convex integration demo
-
-The home page subscribes to `api.tasks.list` with Convex's `useQuery` hook.
-Tasks have `text` and `isCompleted` fields, and the query returns the newest
-100 tasks. Update either field in the Convex dashboard to see live updates.
-
-With the existing development deployment configured in `.env.local`, push the
-schema and functions, then seed 12 sample tasks:
+Install either component from the GitHub registry into a project initialized with
+shadcn/ui:
 
 ```bash
-bunx convex dev --once
-bunx convex run tasks:seed
-bunx convex run tasks:list
+bunx --bun shadcn@latest add hieu-lai/async-combobox/async-combobox
+bunx --bun shadcn@latest add hieu-lai/async-combobox/async-multi-combobox
 ```
 
-The seed is internal (CLI only) and safe to run again: it skips existing sample
-tasks without changing their completion state. Use `bunx convex dev` while
-editing backend functions to keep the development deployment in sync.
+Each item installs its component into your configured UI directory, the
+`useInfiniteScroll` hook into your hooks directory, the supporting UI files, and
+their npm dependencies. With the default aliases, import the components from
+`@/components/ui/async-combobox` and `@/components/ui/async-multi-combobox`.
 
-### Gen 1 Pokémon data
+These items ship the repository's Base UI primitives, including the customized
+`combobox.tsx` with loading support. Preview with `--dry-run` and review any
+existing UI files before accepting replacement prompts, especially in projects
+using another primitive library.
 
-The `pokemon` table stores the 151 original species in their default forms,
-using current [PokéAPI](https://pokeapi.co/docs/v2#pokemon) data. Its fields are
-`id` (numeric Pokédex number), `name`, `displayName` (first letter capitalized,
-with terminal `-m`/`-f` rendered as ` (M)`/` (F)`), `height` (decimetres), `weight`
-(hectograms), `image` (`sprites.front_default` URL), `types` and `abilities`
-(name arrays, including hidden abilities), and `searchText` (name, types, and
-abilities joined with spaces). Convex also adds `_id` and `_creationTime`.
-The table has a `by_pokemon_id` index and a `search_searchText` full-text index.
+Use a React version that supports `useEffectEvent` (the demo uses React 19.3),
+and Tailwind CSS 4 with shadcn theme variables; see [the demo stylesheet](app/globals.css).
 
-The snapshot is cached in `convex/data/pokemon.json`. To refresh it from PokéAPI
-and import it into the configured development deployment:
+### Manual installation
 
-```bash
-node scripts/fetch-pokemon.mjs --refresh
-bunx convex dev --once
-bunx convex run pokemon:seed
+1. Copy either or both components:
+   - [AsyncCombobox](registry/components/async-combobox.tsx)
+   - [AsyncMultiCombobox](registry/components/async-multi-combobox.tsx)
+2. Copy [useInfiniteScroll](registry/hooks/use-infinite-scroll.ts).
+3. Copy the supporting files from `components/ui/`: `combobox.tsx`, `skeleton.tsx`,
+   `spinner.tsx`, `input-group.tsx`, `button.tsx`, `input.tsx`, and `textarea.tsx`.
+   The included combobox primitive contains the loading support used by these components.
+4. Install their dependencies:
+
+   ```bash
+   bun add @base-ui/react cn class-variance-authority lucide-react
+   ```
+
+Adjust the `@/components/...` and `@/registry/...` imports to match your project.
+Use the components inside a client component when working with React Server Components.
+
+## Usage
+
+Your data layer supplies the search results, loading flags, and pagination callback.
+These wrappers manage selection while leaving fetching to the caller:
+
+```tsx
+'use client'
+
+import { useState } from 'react'
+import { AsyncCombobox } from '@/components/ui/async-combobox'
+import { AsyncMultiCombobox } from '@/components/ui/async-multi-combobox'
+
+type Option = { id: string; name: string }
+
+type SearchResults = {
+  items: Option[]
+  onSearch: (query: string) => void
+  isLoading: boolean
+  isLoadingMore: boolean
+  hasMore: boolean
+  onLoadMore: () => void
+}
+
+export function SingleSelect({ onSearch, ...data }: SearchResults) {
+  const [value, setValue] = useState<Option | undefined>()
+
+  return (
+    <>
+      <label htmlFor="single-option">Choose an option</label>
+      <AsyncCombobox
+        {...data}
+        id="single-option"
+        value={value}
+        onValueChange={setValue}
+        onQueryChange={onSearch}
+        itemToStringLabel={(item) => item.name}
+        itemToStringValue={(item) => item.id}
+        isItemEqualToValue={(item, selected) => item.id === selected.id}
+        className="w-full max-w-xs"
+        placeholder="Search options"
+      />
+    </>
+  )
+}
+
+export function MultiSelect({ onSearch, ...data }: SearchResults) {
+  const [value, setValue] = useState<Option[]>([])
+
+  return (
+    <AsyncMultiCombobox
+      {...data}
+      value={value}
+      onValueChange={setValue}
+      onInputValueChange={onSearch}
+      itemToStringLabel={(item) => item.name}
+      itemToStringValue={(item) => item.id}
+      isItemEqualToValue={(item, selected) => item.id === selected.id}
+      className="w-full max-w-xs"
+      placeholder="Search options"
+    />
+  )
+}
 ```
 
-Omit `--refresh` to reuse an existing snapshot. The seed is internal (CLI only),
-runs atomically, and upserts by Pokédex number: repeated runs preserve document
-IDs and skip identical rows. No scheduled refresh is configured.
+### Connect any fetcher
 
-First, run the development server:
+The components do not make requests, debounce queries, filter items, or cache results.
+Your data layer controls those behaviors:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+| Event or state  | What your data layer should do                              |
+| --------------- | ----------------------------------------------------------- |
+| Search callback | Fetch the first page for the new query and replace `items`. |
+| `onLoadMore`    | Fetch the next page and append it to `items`.               |
+| `isLoading`     | Set while loading the first page or a new search.           |
+| `isLoadingMore` | Set while fetching an additional page.                      |
+| `hasMore`       | Indicate whether another page is available.                 |
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Keep previously loaded items in `items` to retain them while loading, or pass an
+empty array to show the initial loader. Reset pagination when the query changes,
+and ignore stale responses when searches overlap. The optional
+[useDebounce](registry/hooks/use-debounce.ts) hook can reduce search requests.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Customization
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Prop                        | Purpose                                                                                             |
+| --------------------------- | --------------------------------------------------------------------------------------------------- |
+| `renderItem`                | Render a custom `ComboboxItem` with a stable key and `value={item}`.                                |
+| `renderValue`               | Customize the single-select value with single-line, non-interactive content.                        |
+| `renderChip`                | Render a custom `ComboboxChip` for multi-select values.                                             |
+| `renderEmpty`               | Return a custom `ComboboxEmpty`, or `null` to hide the empty state.                                 |
+| `renderLoading`             | Replace the default skeleton rows shown when loading with no items.                                 |
+| `renderLoadingMore`         | Add non-selectable content below the options while loading another page.                            |
+| `scrollThreshold`           | Load earlier using a fraction, percentage, or pixel distance, such as `0.8`, `'80%'`, or `'100px'`. |
+| `className`                 | Set the field width; the dropdown follows it.                                                       |
+| `disabled` / `aria-invalid` | Disable the field or mark it invalid.                                                               |
 
-## Learn More
+Import `ComboboxItem`, `ComboboxChip`, and `ComboboxEmpty` from
+`@/components/ui/combobox`. Both loading states suppress the empty message and
+pause infinite scrolling.
 
-To learn more about Next.js, take a look at the following resources:
+See the [custom single-select example](app/custom-example.tsx) and
+[custom multi-select example](app/custom-multi-example.tsx) for options, selected
+values, and chips with avatars and custom loaders.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Publishing the GitHub registry
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The root [registry.json](registry.json) defines the two installable items. Each
+item includes its supporting source files so a branch, tag, or commit selects the
+whole implementation together. The CLI reads these files directly from GitHub;
+no registry server, GitHub Pages site, npm publication, or generated JSON files
+are needed. See the [shadcn GitHub registry docs](https://ui.shadcn.com/docs/registry/github).
 
-## Deploy on Vercel
+1. Validate the local source registry:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   bunx --bun shadcn@latest registry validate ./registry.json
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. Commit and push `registry.json` and its referenced source files to the default
+   branch of `hieu-lai/async-combobox`. Keep the repository public for users to
+   install without GitHub credentials.
+3. Verify the published registry:
+
+   ```bash
+   bunx --bun shadcn@latest registry validate hieu-lai/async-combobox
+   bunx --bun shadcn@latest list hieu-lai/async-combobox
+   bunx --bun shadcn@latest view hieu-lai/async-combobox/async-combobox
+   ```
+
+Unpinned installs use the repository's default branch. To publish a stable
+release, push a Git tag and append it to the install address, for example
+`hieu-lai/async-combobox/async-combobox#v1.0.0`. The tag must contain the registry
+manifest and all its referenced files.
