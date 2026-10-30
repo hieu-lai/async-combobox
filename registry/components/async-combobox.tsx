@@ -20,6 +20,7 @@ type InfiniteListProps<T> = {
   dataLength: number
   hasMore: boolean
   onLoadMore?: () => void
+  scrollThreshold?: number | string
   isLoading: boolean
   isLoadingMore: boolean
   itemToStringLabel: (item: T) => string
@@ -33,6 +34,7 @@ function InfiniteComboboxList<T>({
   dataLength,
   hasMore,
   onLoadMore,
+  scrollThreshold,
   isLoading,
   isLoadingMore,
   itemToStringLabel,
@@ -50,7 +52,7 @@ function InfiniteComboboxList<T>({
     hasMore: canLoadMore && list !== null,
     next: () => onLoadMore?.(),
     scrollableTarget: list,
-    scrollThreshold: '0px',
+    scrollThreshold,
   })
 
   return (
@@ -100,6 +102,8 @@ type Props<T> = {
   onQueryChange?: (query: string) => void
   hasMore?: boolean
   onLoadMore?: () => void
+  /** Load-more threshold: fraction (0–1), percentage, or pixel distance before the end. Defaults to '0px'. */
+  scrollThreshold?: number | string
   /** Loading the first page or results for a new search. Keeps supplied items visible. */
   isLoading?: boolean
   /** Loading another page. Keeps existing options visible. */
@@ -135,6 +139,7 @@ export function AsyncCombobox<T>({
   isItemEqualToValue,
   hasMore = false,
   onLoadMore,
+  scrollThreshold,
   isLoading = false,
   isLoadingMore = false,
   disabled = false,
@@ -315,6 +320,7 @@ export function AsyncCombobox<T>({
           dataLength={items.length}
           hasMore={hasMore}
           onLoadMore={onLoadMore}
+          scrollThreshold={scrollThreshold}
           isLoading={isLoading}
           isLoadingMore={isLoadingMore}
           itemToStringLabel={itemToStringLabel}

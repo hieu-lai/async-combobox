@@ -36,6 +36,18 @@ field width automatically.
 
 Use `w-64` for a fixed width or `w-full` to fill the available width.
 
+### Combobox scroll threshold
+
+Pass `scrollThreshold` to either async combobox to control when `onLoadMore`
+fires. It accepts a fraction from 0 to 1 (such as `0.8`), a percentage string
+(such as `'80%'`), or a pixel distance before the end (such as `'100px'`).
+The default is `'0px'`, which loads when the end of the list becomes visible.
+
+```tsx
+<AsyncCombobox {...props} scrollThreshold="100px" />
+<AsyncMultiCombobox {...multiProps} scrollThreshold="100px" />
+```
+
 ### Combobox invalid state
 
 Pass `aria-invalid` to either async combobox to mark its input invalid and show
