@@ -1,6 +1,7 @@
 import { ComponentExample } from '@/components/component-example'
 import { ComponentPreview } from '@/components/component-preview'
-import { Button } from '@/components/ui/button'
+import GitHubIcon from '@/components/icons/github'
+import { buttonVariants } from '@/components/ui/button'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 
@@ -41,7 +42,13 @@ export default async function Home() {
               The last async combobox you&apos;ll ever need.
             </p>
           </div>
-          <Button className="mx-auto">Click me</Button>
+          <a
+            href="https://github.com/hieu-lai/async-combobox"
+            className={buttonVariants({ className: 'mx-auto' })}
+          >
+            <GitHubIcon />
+            GitHub
+          </a>
         </div>
         <ComponentPreview
           code={singleExampleCode}
