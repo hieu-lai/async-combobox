@@ -12,10 +12,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useState } from 'react'
 
 const commands = {
-  pnpm: 'pnpm dlx shadcn@latest add code-block',
-  npm: 'npx shadcn@latest add code-block',
-  yarn: 'yarn dlx shadcn@latest add code-block',
-  bun: 'bunx --bun shadcn@latest add code-block',
+  pnpm: 'pnpm dlx shadcn@latest add hieu-lai/async-combobox/async-comboboxes',
+  npm: 'npx shadcn@latest add hieu-lai/async-combobox/async-comboboxes',
+  yarn: 'yarn dlx shadcn@latest add hieu-lai/async-combobox/async-comboboxes',
+  bun: 'bunx --bun shadcn@latest add hieu-lai/async-combobox/async-comboboxes',
 }
 
 type PackageManager = keyof typeof commands
@@ -95,18 +95,23 @@ export function Installation() {
         </TabsContent>
         <TabsContent value="manual">
           <p className="text-muted-foreground leading-relaxed">
-            Copy the component source and install its dependencies using the{' '}
+            Copy the components, shared hook, and supporting UI files, then
+            install their dependencies using the{' '}
             <a
-              href="https://ui.shadcn.com/docs/components/base/code-block#installation"
+              href="https://github.com/hieu-lai/async-combobox#manual-installation"
               target="_blank"
               rel="noreferrer"
               className="text-foreground underline underline-offset-4"
             >
               manual installation guide
             </a>
-            . Place the component in{' '}
+            . Place the components in{' '}
             <code className="text-foreground font-mono">
-              components/ui/code-block.tsx
+              components/ui/async-combobox.tsx
+            </code>{' '}
+            and{' '}
+            <code className="text-foreground font-mono">
+              components/ui/async-multi-combobox.tsx
             </code>
             .
           </p>

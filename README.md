@@ -18,15 +18,21 @@ or your preferred data-fetching hook.
 
 ## Installation
 
-Install either component from the GitHub registry into a project initialized with
+Install both components from the GitHub registry into a project initialized with
 shadcn/ui:
+
+```bash
+bunx --bun shadcn@latest add hieu-lai/async-combobox/async-comboboxes
+```
+
+Or install either component individually:
 
 ```bash
 bunx --bun shadcn@latest add hieu-lai/async-combobox/async-combobox
 bunx --bun shadcn@latest add hieu-lai/async-combobox/async-multi-combobox
 ```
 
-Each item installs its component into your configured UI directory, the
+Each item installs its components into your configured UI directory, the
 `useInfiniteScroll` hook into your hooks directory, the supporting UI files, and
 their npm dependencies. With the default aliases, import the components from
 `@/components/ui/async-combobox` and `@/components/ui/async-multi-combobox`.
@@ -163,9 +169,11 @@ values, and chips with avatars and custom loaders.
 
 ## Publishing the GitHub registry
 
-The root [registry.json](registry.json) defines the two installable items. Each
-item includes its supporting source files so a branch, tag, or commit selects the
-whole implementation together. The CLI reads these files directly from GitHub;
+The root [registry.json](registry.json) defines the combined `async-comboboxes`
+item and the two individual component items. The combined item lists both
+component files and one copy of each shared supporting file in its `files` array.
+Each item includes its supporting source files so a branch, tag, or commit selects
+the whole implementation together. The CLI reads these files directly from GitHub;
 no registry server, GitHub Pages site, npm publication, or generated JSON files
 are needed. See the [shadcn GitHub registry docs](https://ui.shadcn.com/docs/registry/github).
 
@@ -183,10 +191,10 @@ are needed. See the [shadcn GitHub registry docs](https://ui.shadcn.com/docs/reg
    ```bash
    bunx --bun shadcn@latest registry validate hieu-lai/async-combobox
    bunx --bun shadcn@latest list hieu-lai/async-combobox
-   bunx --bun shadcn@latest view hieu-lai/async-combobox/async-combobox
+   bunx --bun shadcn@latest view hieu-lai/async-combobox/async-comboboxes
    ```
 
 Unpinned installs use the repository's default branch. To publish a stable
 release, push a Git tag and append it to the install address, for example
-`hieu-lai/async-combobox/async-combobox#v1.0.0`. The tag must contain the registry
+`hieu-lai/async-combobox/async-comboboxes#v1.0.0`. The tag must contain the registry
 manifest and all its referenced files.
