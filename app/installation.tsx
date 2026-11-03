@@ -1,6 +1,7 @@
 'use client'
 
 import RectangleTerminalIcon from '@/components/icons/rectangle-terminal'
+import TypeScriptIcon from '@/components/icons/typescript'
 import { Step, Steps } from '@/components/steps'
 import { Button } from '@/components/ui/button'
 import {
@@ -12,10 +13,10 @@ import {
   CodeBlockLine,
   CodeBlockTitle,
 } from '@/components/ui/code-block'
+import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useHighlightedCode } from '@/hooks/use-highlighted-code'
 import { cn } from '@/lib/utils'
-import { FileCodeIcon } from 'lucide-react'
 import { useId, useState } from 'react'
 
 const commands = {
@@ -84,28 +85,12 @@ export function Installation({ files }: { files: InstallationFile[] }) {
         <TabsContent value="manual">
           <Steps>
             <Step>Install the required shadcn/ui dependencies.</Step>
-            <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
-              Start with a{' '}
-              <a
-                href="https://ui.shadcn.com/docs/installation"
-                className="text-foreground underline underline-offset-4"
-              >
-                Base UI shadcn/ui project
-              </a>{' '}
-              using Tailwind CSS 4 and React 19.2 or later. Install the shared
-              UI components and packages for both async components:
-            </p>
             <InstallationCommand
               commands={dependencyCommands}
               packageManager={packageManager}
               onPackageManagerChange={setPackageManager}
             />
-
             <Step>Copy and paste the following code into your project.</Step>
-            <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
-              Add the shared hook, shared combobox file, and both async
-              components at the paths shown.
-            </p>
             <div className="flex min-w-0 flex-col gap-4">
               {files.map((file) => (
                 <InstallationSource key={file.path} file={file} />
@@ -113,14 +98,6 @@ export function Installation({ files }: { files: InstallationFile[] }) {
             </div>
 
             <Step>Update the import paths to match your project setup.</Step>
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              The code uses <code>@/components/ui</code> for UI components and{' '}
-              <code>@/hooks/use-infinite-scroll</code> for the shared hook.
-              Adjust these aliases if your folders differ, then import{' '}
-              <code>AsyncCombobox</code> or <code>AsyncMultiCombobox</code> into
-              a client component. Connect your search results, loading states,
-              and pagination callback as shown in the examples below.
-            </p>
           </Steps>
         </TabsContent>
       </Tabs>
@@ -181,7 +158,7 @@ function InstallationSource({ file }: { file: InstallationFile }) {
     <CodeBlock className="bg-muted rounded-2xl border-0">
       <CodeBlockHeader className="border-input border-b px-4 py-3">
         <CodeBlockTitle>
-          <FileCodeIcon aria-hidden="true" />
+          <TypeScriptIcon aria-hidden="true" className="size-5" />
           <span className="font-mono font-normal" title={file.path}>
             {file.path}
           </span>
@@ -198,6 +175,7 @@ function InstallationSource({ file }: { file: InstallationFile }) {
           >
             {expanded ? 'Collapse' : 'Expand'}
           </Button>
+          <Separator orientation="vertical" className="mx-1 my-1" />
           <CodeBlockCopyButton
             value={file.code}
             aria-label={`Copy ${file.path}`}
