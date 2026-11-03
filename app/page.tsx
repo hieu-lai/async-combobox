@@ -23,6 +23,9 @@ export default async function Home() {
     customMultiExampleCode,
     disabledExampleCode,
     invalidExampleCode,
+    infiniteScrollCode,
+    asyncComboboxCode,
+    asyncMultiComboboxCode,
   ] = await Promise.all([
     readFile(path.join(process.cwd(), 'app/single-example.tsx'), 'utf8'),
     readFile(path.join(process.cwd(), 'app/multi-example.tsx'), 'utf8'),
@@ -30,6 +33,18 @@ export default async function Home() {
     readFile(path.join(process.cwd(), 'app/custom-multi-example.tsx'), 'utf8'),
     readFile(path.join(process.cwd(), 'app/disabled-example.tsx'), 'utf8'),
     readFile(path.join(process.cwd(), 'app/invalid-example.tsx'), 'utf8'),
+    readFile(
+      path.join(process.cwd(), 'registry/hooks/use-infinite-scroll.ts'),
+      'utf8',
+    ),
+    readFile(
+      path.join(process.cwd(), 'registry/components/async-combobox.tsx'),
+      'utf8',
+    ),
+    readFile(
+      path.join(process.cwd(), 'registry/components/async-multi-combobox.tsx'),
+      'utf8',
+    ),
   ])
 
   return (
@@ -56,7 +71,25 @@ export default async function Home() {
         >
           <SingleExample />
         </ComponentPreview>
-        <Installation />
+        <Installation
+          files={[
+            { path: 'hooks/use-infinite-scroll.ts', code: infiniteScrollCode },
+            {
+              path: 'components/ui/async-combobox.tsx',
+              code: asyncComboboxCode.replaceAll(
+                '@/registry/hooks/',
+                '@/hooks/',
+              ),
+            },
+            {
+              path: 'components/ui/async-multi-combobox.tsx',
+              code: asyncMultiComboboxCode.replaceAll(
+                '@/registry/hooks/',
+                '@/hooks/',
+              ),
+            },
+          ]}
+        />
         <ComponentExample
           id="basic"
           title="Basic"

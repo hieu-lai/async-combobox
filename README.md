@@ -19,7 +19,7 @@ or your preferred data-fetching hook.
 ## Installation
 
 Install both components from the GitHub registry into a project initialized with
-shadcn/ui:
+Base UI shadcn/ui:
 
 ```bash
 bunx --bun shadcn@latest add hieu-lai/async-combobox/async-comboboxes
@@ -37,28 +37,26 @@ Each item installs its components into your configured UI directory, the
 their npm dependencies. With the default aliases, import the components from
 `@/components/ui/async-combobox` and `@/components/ui/async-multi-combobox`.
 
-These items ship the repository's Base UI primitives, including the customized
-`combobox.tsx` with loading support. Preview with `--dry-run` and review any
-existing UI files before accepting replacement prompts, especially in projects
-using another primitive library.
+The supporting UI components are installed from the official shadcn registry.
+Loading indicators are composed inside the async components, so no changes to
+the standard `combobox.tsx` are required.
 
 Use a React version that supports `useEffectEvent` (the demo uses React 19.3),
 and Tailwind CSS 4 with shadcn theme variables; see [the demo stylesheet](app/globals.css).
 
 ### Manual installation
 
-1. Copy either or both components:
-   - [AsyncCombobox](registry/components/async-combobox.tsx)
-   - [AsyncMultiCombobox](registry/components/async-multi-combobox.tsx)
-2. Copy [useInfiniteScroll](registry/hooks/use-infinite-scroll.ts).
-3. Copy the supporting files from `components/ui/`: `combobox.tsx`, `skeleton.tsx`,
-   `spinner.tsx`, `input-group.tsx`, `button.tsx`, `input.tsx`, and `textarea.tsx`.
-   The included combobox primitive contains the loading support used by these components.
-4. Install their dependencies:
+1. In a Base UI shadcn/ui project, install the supporting components and packages:
 
    ```bash
-   bun add @base-ui/react cn class-variance-authority lucide-react
+   bunx --bun shadcn@latest add combobox skeleton spinner input-group
+   bun add cn @base-ui/react@^1.9.0 lucide-react
    ```
+
+2. Copy either or both components:
+   - [AsyncCombobox](registry/components/async-combobox.tsx)
+   - [AsyncMultiCombobox](registry/components/async-multi-combobox.tsx)
+3. Copy [useInfiniteScroll](registry/hooks/use-infinite-scroll.ts).
 
 Adjust the `@/components/...` and `@/registry/...` imports to match your project.
 Use the components inside a client component when working with React Server Components.
@@ -144,6 +142,9 @@ Keep previously loaded items in `items` to retain them while loading, or pass an
 empty array to show the initial loader. Reset pagination when the query changes,
 and ignore stale responses when searches overlap. The optional
 [useDebounce](registry/hooks/use-debounce.ts) hook can reduce search requests.
+When debouncing, include the pending debounce in `isLoading` (for example,
+`query !== debouncedQuery || isFetching`) so the loading indicator stays visible
+until results for the latest query arrive.
 
 ## Customization
 
@@ -171,9 +172,9 @@ values, and chips with avatars and custom loaders.
 
 The root [registry.json](registry.json) defines the combined `async-comboboxes`
 item and the two individual component items. The combined item lists both
-component files and one copy of each shared supporting file in its `files` array.
-Each item includes its supporting source files so a branch, tag, or commit selects
-the whole implementation together. The CLI reads these files directly from GitHub;
+component files and one copy of the shared hook in its `files` array.
+Each item declares the official shadcn components in `registryDependencies`.
+The CLI reads the async components and hook directly from GitHub;
 no registry server, GitHub Pages site, npm publication, or generated JSON files
 are needed. See the [shadcn GitHub registry docs](https://ui.shadcn.com/docs/registry/github).
 

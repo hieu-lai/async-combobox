@@ -11,10 +11,9 @@
       "dependencies": [
         "@base-ui/react@^1.9.0",
         "cn@^0.5.0",
-        "class-variance-authority@^0.7.1",
         "lucide-react@^1.61.0"
       ],
-      "docs": "Requires React with useEffectEvent and Tailwind CSS 4 with a shadcn theme. Includes a customized Base UI combobox primitive with loading support; review existing UI files before replacing them.",
+      "docs": "Requires a Base UI shadcn/ui project, React with useEffectEvent, and Tailwind CSS 4 with a shadcn theme.",
       "files": [
         {
           "path": "registry/components/async-combobox.tsx",
@@ -27,36 +26,9 @@
         {
           "path": "registry/hooks/use-infinite-scroll.ts",
           "type": "registry:hook"
-        },
-        {
-          "path": "components/ui/combobox.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "components/ui/skeleton.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "components/ui/spinner.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "components/ui/input-group.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "components/ui/textarea.tsx",
-          "type": "registry:ui"
         }
-      ]
+      ],
+      "registryDependencies": ["combobox", "skeleton", "spinner", "input-group"]
     },
     {
       "name": "async-combobox",
@@ -66,10 +38,9 @@
       "dependencies": [
         "@base-ui/react@^1.9.0",
         "cn@^0.5.0",
-        "class-variance-authority@^0.7.1",
         "lucide-react@^1.61.0"
       ],
-      "docs": "Requires React with useEffectEvent and Tailwind CSS 4 with a shadcn theme. Includes a customized Base UI combobox primitive with loading support; review existing UI files before replacing them.",
+      "docs": "Requires a Base UI shadcn/ui project, React with useEffectEvent, and Tailwind CSS 4 with a shadcn theme.",
       "files": [
         {
           "path": "registry/components/async-combobox.tsx",
@@ -78,36 +49,9 @@
         {
           "path": "registry/hooks/use-infinite-scroll.ts",
           "type": "registry:hook"
-        },
-        {
-          "path": "components/ui/combobox.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "components/ui/skeleton.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "components/ui/spinner.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "components/ui/input-group.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "components/ui/textarea.tsx",
-          "type": "registry:ui"
         }
-      ]
+      ],
+      "registryDependencies": ["combobox", "skeleton", "spinner", "input-group"]
     },
     {
       "name": "async-multi-combobox",
@@ -117,10 +61,9 @@
       "dependencies": [
         "@base-ui/react@^1.9.0",
         "cn@^0.5.0",
-        "class-variance-authority@^0.7.1",
         "lucide-react@^1.61.0"
       ],
-      "docs": "Requires React with useEffectEvent and Tailwind CSS 4 with a shadcn theme. Includes a customized Base UI combobox primitive with loading support; review existing UI files before replacing them.",
+      "docs": "Requires a Base UI shadcn/ui project, React with useEffectEvent, and Tailwind CSS 4 with a shadcn theme.",
       "files": [
         {
           "path": "registry/components/async-multi-combobox.tsx",
@@ -129,36 +72,9 @@
         {
           "path": "registry/hooks/use-infinite-scroll.ts",
           "type": "registry:hook"
-        },
-        {
-          "path": "components/ui/combobox.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "components/ui/skeleton.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "components/ui/spinner.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "components/ui/input-group.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "components/ui/button.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "components/ui/input.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "components/ui/textarea.tsx",
-          "type": "registry:ui"
         }
-      ]
+      ],
+      "registryDependencies": ["combobox", "skeleton", "spinner", "input-group"]
     }
   ]
 }
