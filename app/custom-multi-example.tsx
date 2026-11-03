@@ -21,7 +21,7 @@ export function CustomMultiExample() {
   const { isLoading, loadMore, results, status } = usePaginatedQuery(
     api.pokemon.rich,
     { query: debouncedQuery },
-    { initialNumItems: 10 },
+    { initialNumItems: 20 },
   )
 
   const isLoadingMore = status === 'LoadingMore'
