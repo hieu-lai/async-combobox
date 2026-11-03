@@ -2,10 +2,19 @@
 
 import {
   Combobox,
-  ComboboxInput,
+  ComboboxTrigger,
   useComboboxAnchor,
 } from '@/components/ui/combobox'
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from '@/components/ui/input-group'
+import { Spinner } from '@/components/ui/spinner'
+import { Combobox as ComboboxPrimitive } from '@base-ui/react'
 import { cn } from 'cn'
+import { XIcon } from 'lucide-react'
 import { useLayoutEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 
@@ -17,13 +26,9 @@ import {
 type Props<T> = AsyncComboboxSharedProps<T> & {
   value?: T
   onValueChange?: (value: T | undefined) => void
-  /** Search term changes from editing or clearing. Selection resets it to an empty string. */
   onQueryChange?: (query: string) => void
-  /** Show a clear button when an item is selected. Also resets the query. Defaults to true. */
   showClear?: boolean
-  /** Connect an external label to the input. */
   id?: string
-  /** Render single-line, non-interactive selected content. Focus switches to editable label text. */
   renderValue?: (item: T) => ReactNode
 }
 
@@ -66,13 +71,11 @@ export function AsyncCombobox<T>({
   useLayoutEffect(() => {
     const input = inputRef.current
     if (showRichValue && input && input === document.activeElement) {
-      // Soft keyboards and paste can insert text without a keydown event.
       input.select()
     }
   }, [showRichValue, selectedLabel])
 
   function changeEditing(editing: boolean) {
-    // Focus can follow a clear or pointer event before React commits its state.
     editingRef.current = editing
     setIsEditing(editing)
   }
@@ -99,7 +102,6 @@ export function AsyncCombobox<T>({
       value={value ?? null}
       onValueChange={(nextValue, details) => {
         if (renderValue) {
-          // Escape cancels editing; explicitly clearing the input clears selection.
           if (details.reason === 'escape-key') {
             details.cancel()
             return
@@ -127,7 +129,6 @@ export function AsyncCombobox<T>({
           details.cancel()
           return
         }
-        // Selection fills the editable input without searching for its label.
         setInputValue(text)
         if (renderValue) {
           if (details.reason === 'clear-press') {
@@ -152,49 +153,52 @@ export function AsyncCombobox<T>({
       }}
       filter={null}
     >
-      <ComboboxInput
-        ref={inputRef}
-        anchorRef={anchor}
-        id={id}
-        placeholder={placeholder}
-        disabled={disabled}
-        aria-invalid={ariaInvalid}
-        className={cn(className, showRichValue && '[&>input]:opacity-0')}
-        showClear={showClear}
-        isLoading={isLoading || isLoadingMore}
-        onFocus={(event) => startEditing(event.currentTarget)}
-        onPointerDown={(event) => {
-          if (!showRichValue || disabled) return
-          // Keep the initial pointer press from collapsing the select-all range.
-          event.preventDefault()
-          event.currentTarget.focus()
-          startEditing(event.currentTarget)
-        }}
-        onKeyDown={(event) => {
-          if (!renderValue || event.nativeEvent.isComposing) return
-          if (event.key === 'Escape') {
-            finishEditing()
-          } else if (
-            event.key.length === 1 ||
-            [
-              'Backspace',
-              'Delete',
-              'ArrowLeft',
-              'ArrowRight',
-              'ArrowUp',
-              'ArrowDown',
-              'Home',
-              'End',
-            ].includes(event.key)
-          ) {
-            startEditing(event.currentTarget)
-          }
-        }}
-        onCompositionStart={(event) => startEditing(event.currentTarget)}
-        onBlur={() => {
-          if (renderValue) finishEditing()
-        }}
+      <InputGroup
+        ref={anchor}
+        className={cn(
+          'w-auto',
+          className,
+          showRichValue && '[&>input]:opacity-0',
+        )}
       >
+        <ComboboxPrimitive.Input
+          ref={inputRef}
+          render={<InputGroupInput disabled={disabled} />}
+          id={id}
+          placeholder={placeholder}
+          aria-invalid={ariaInvalid}
+          onFocus={(event) => startEditing(event.currentTarget)}
+          onPointerDown={(event) => {
+            if (!showRichValue || disabled) return
+            event.preventDefault()
+            event.currentTarget.focus()
+            startEditing(event.currentTarget)
+          }}
+          onKeyDown={(event) => {
+            if (!renderValue || event.nativeEvent.isComposing) return
+            if (event.key === 'Escape') {
+              finishEditing()
+            } else if (
+              event.key.length === 1 ||
+              [
+                'Backspace',
+                'Delete',
+                'ArrowLeft',
+                'ArrowRight',
+                'ArrowUp',
+                'ArrowDown',
+                'Home',
+                'End',
+              ].includes(event.key)
+            ) {
+              startEditing(event.currentTarget)
+            }
+          }}
+          onCompositionStart={(event) => startEditing(event.currentTarget)}
+          onBlur={() => {
+            if (renderValue) finishEditing()
+          }}
+        />
         {showRichValue && (
           <div
             aria-hidden="true"
@@ -204,7 +208,34 @@ export function AsyncCombobox<T>({
             <div className="w-full truncate">{renderValue(value)}</div>
           </div>
         )}
-      </ComboboxInput>
+        <InputGroupAddon align="inline-end">
+          {isLoading || isLoadingMore ? (
+            <span className="mr-[-0.3rem] flex size-6 items-center justify-center">
+              <Spinner />
+            </span>
+          ) : (
+            <>
+              <InputGroupButton
+                size="icon-xs"
+                variant="ghost"
+                render={<ComboboxTrigger />}
+                data-slot="input-group-button"
+                className="group-has-data-[slot=combobox-clear]/input-group:hidden data-pressed:bg-transparent"
+                disabled={disabled}
+              />
+              {showClear && (
+                <ComboboxPrimitive.Clear
+                  data-slot="combobox-clear"
+                  render={<InputGroupButton variant="ghost" size="icon-xs" />}
+                  disabled={disabled}
+                >
+                  <XIcon className="pointer-events-none" />
+                </ComboboxPrimitive.Clear>
+              )}
+            </>
+          )}
+        </InputGroupAddon>
+      </InputGroup>
       <AsyncComboboxContent
         anchor={anchor}
         renderEmpty={renderEmpty}

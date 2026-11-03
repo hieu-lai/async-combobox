@@ -22,7 +22,6 @@ type Props<T> = AsyncComboboxSharedProps<T> & {
   onValueChange?: (value: Array<T>) => void
   inputValue?: string
   onInputValueChange?: (value: string) => void
-  /** Render a custom ComboboxChip with a stable key. */
   renderChip?: (item: T) => ReactNode
 }
 
@@ -84,7 +83,6 @@ export function AsyncMultiCombobox<T>({
           placeholder={placeholder}
           aria-invalid={ariaInvalid}
         />
-        {/* Reserve the spinner's space so loading does not resize the anchor. */}
         <InputGroupAddon
           align="inline-end"
           className="ml-auto w-4 shrink-0 p-0"

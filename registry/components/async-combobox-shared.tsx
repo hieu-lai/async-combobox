@@ -17,17 +17,11 @@ type AsyncComboboxOptionsProps<T> = {
   itemToStringValue?: (item: T) => string
   hasMore?: boolean
   onLoadMore?: () => void
-  /** Load-more threshold: fraction (0–1), percentage, or pixel distance before the end. Defaults to '0px'. */
   scrollThreshold?: number | string
-  /** Loading the first page or results for a new search. Keeps supplied items visible. */
   isLoading?: boolean
-  /** Loading another page. Keeps existing options visible. */
   isLoadingMore?: boolean
-  /** Render a custom ComboboxItem with a stable key and value={item}. */
   renderItem?: (item: T) => ReactNode
-  /** Render loading content when no items are available. Defaults to skeleton rows. */
   renderLoading?: () => ReactNode
-  /** Render non-selectable content after the options when loading another page. Defaults to nothing. */
   renderLoadingMore?: () => ReactNode
 }
 
@@ -35,12 +29,9 @@ export type AsyncComboboxSharedProps<T> = AsyncComboboxOptionsProps<T> & {
   items?: Array<T>
   isItemEqualToValue?: (item: T, value: T) => boolean
   disabled?: boolean
-  /** Mark the input invalid and apply the destructive border and ring. */
   'aria-invalid'?: AriaAttributes['aria-invalid']
   placeholder?: string
-  /** Classes for the field wrapper, including width utilities such as w-64 or max-w-xs. */
   className?: string
-  /** Render a custom ComboboxEmpty. Defaults to "No items found." */
   renderEmpty?: () => ReactNode
 }
 
