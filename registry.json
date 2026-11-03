@@ -16,6 +16,10 @@
       "docs": "Requires a Base UI shadcn/ui project, React with useEffectEvent, and Tailwind CSS 4 with a shadcn theme.",
       "files": [
         {
+          "path": "registry/components/async-combobox-shared.tsx",
+          "type": "registry:ui"
+        },
+        {
           "path": "registry/components/async-combobox.tsx",
           "type": "registry:ui"
         },
@@ -43,6 +47,10 @@
       "docs": "Requires a Base UI shadcn/ui project, React with useEffectEvent, and Tailwind CSS 4 with a shadcn theme.",
       "files": [
         {
+          "path": "registry/components/async-combobox-shared.tsx",
+          "type": "registry:ui"
+        },
+        {
           "path": "registry/components/async-combobox.tsx",
           "type": "registry:ui"
         },
@@ -65,6 +73,10 @@
       ],
       "docs": "Requires a Base UI shadcn/ui project, React with useEffectEvent, and Tailwind CSS 4 with a shadcn theme.",
       "files": [
+        {
+          "path": "registry/components/async-combobox-shared.tsx",
+          "type": "registry:ui"
+        },
         {
           "path": "registry/components/async-multi-combobox.tsx",
           "type": "registry:ui"

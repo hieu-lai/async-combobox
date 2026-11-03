@@ -13,7 +13,7 @@ export function SingleExample() {
   const { isLoading, loadMore, results, status } = usePaginatedQuery(
     api.pokemon.simple,
     { query: debouncedQuery },
-    { initialNumItems: 10 },
+    { initialNumItems: 20 },
   )
 
   const isLoadingMore = status === 'LoadingMore'

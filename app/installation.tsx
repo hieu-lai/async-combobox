@@ -103,7 +103,8 @@ export function Installation({ files }: { files: InstallationFile[] }) {
 
             <Step>Copy and paste the following code into your project.</Step>
             <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
-              Add the shared hook and both async components at the paths shown.
+              Add the shared hook, shared combobox file, and both async
+              components at the paths shown.
             </p>
             <div className="flex min-w-0 flex-col gap-4">
               {files.map((file) => (

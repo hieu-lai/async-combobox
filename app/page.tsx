@@ -24,6 +24,7 @@ export default async function Home() {
     disabledExampleCode,
     invalidExampleCode,
     infiniteScrollCode,
+    asyncComboboxSharedCode,
     asyncComboboxCode,
     asyncMultiComboboxCode,
   ] = await Promise.all([
@@ -35,6 +36,10 @@ export default async function Home() {
     readFile(path.join(process.cwd(), 'app/invalid-example.tsx'), 'utf8'),
     readFile(
       path.join(process.cwd(), 'registry/hooks/use-infinite-scroll.ts'),
+      'utf8',
+    ),
+    readFile(
+      path.join(process.cwd(), 'registry/components/async-combobox-shared.tsx'),
       'utf8',
     ),
     readFile(
@@ -75,18 +80,19 @@ export default async function Home() {
           files={[
             { path: 'hooks/use-infinite-scroll.ts', code: infiniteScrollCode },
             {
-              path: 'components/ui/async-combobox.tsx',
-              code: asyncComboboxCode.replaceAll(
+              path: 'components/ui/async-combobox-shared.tsx',
+              code: asyncComboboxSharedCode.replaceAll(
                 '@/registry/hooks/',
                 '@/hooks/',
               ),
             },
             {
+              path: 'components/ui/async-combobox.tsx',
+              code: asyncComboboxCode,
+            },
+            {
               path: 'components/ui/async-multi-combobox.tsx',
-              code: asyncMultiComboboxCode.replaceAll(
-                '@/registry/hooks/',
-                '@/hooks/',
-              ),
+              code: asyncMultiComboboxCode,
             },
           ]}
         />

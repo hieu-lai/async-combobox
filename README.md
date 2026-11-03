@@ -56,7 +56,9 @@ and Tailwind CSS 4 with shadcn theme variables; see [the demo stylesheet](app/gl
 2. Copy either or both components:
    - [AsyncCombobox](registry/components/async-combobox.tsx)
    - [AsyncMultiCombobox](registry/components/async-multi-combobox.tsx)
-3. Copy [useInfiniteScroll](registry/hooks/use-infinite-scroll.ts).
+3. Copy the shared files required by either component:
+   - [Shared combobox content and props](registry/components/async-combobox-shared.tsx)
+   - [useInfiniteScroll](registry/hooks/use-infinite-scroll.ts)
 
 Adjust the `@/components/...` and `@/registry/...` imports to match your project.
 Use the components inside a client component when working with React Server Components.
