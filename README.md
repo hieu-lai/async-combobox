@@ -1,203 +1,124 @@
-# Async Combobox
+<h1 align="center">Async Combobox</h1>
 
-Async single- and multi-select React comboboxes with search, infinite scrolling,
-and customizable content. Built with Base UI, shadcn/ui, TypeScript, and Tailwind CSS.
+<h4 align="center">A React combobox with async search and infinite scroll.</h4>
 
-Bring your own fetcher. The components receive items and loading state through
-props and emit search and pagination callbacks. Use native `fetch`, an API client,
-or your preferred data-fetching hook.
+<p align="center">
+  <a href="https://react.dev"><img src="https://img.shields.io/badge/React-149ECA?logo=react&logoColor=white" alt="React" /></a>
+  <a href="https://www.typescriptlang.org"><img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white" alt="TypeScript" /></a>
+  <a href="https://base-ui.com"><img src="https://img.shields.io/badge/Base_UI-000000" alt="Base UI" /></a>
+</p>
 
-## Features
+<p align="center">
+  <a href="#key-features">Key Features</a> •
+  <a href="#why-i-built-it">Why I Built It</a> •
+  <a href="#installation">Installation</a> •
+  <a href="#usage">Usage</a> •
+  <a href="#built-with">Built With</a>
+</p>
 
-- Single selection with a clear button, or multiple selection with removable chips.
-- Async search and infinite scrolling with a configurable load-more threshold.
-- Separate loading states for new searches and additional pages.
-- Custom option content, selected values, chips, loaders, and empty states.
-- Keyboard navigation through Base UI, plus disabled and invalid states.
-- Live examples with viewable, copyable source code in the demo app.
+<p align="center">
+  <img src="output/playwright/async-combobox.gif" alt="Async Combobox demo: open the Pokémon list, scroll to load more, search, select Charizard, and clear the selection" width="400" />
+</p>
+
+## Key Features
+
+- **Infinite scroll** — load the next page as you scroll through the dropdown, with a configurable threshold.
+- **Async search** — connect your own API or data-fetching hook.
+- **Single or multiple selection** — choose one value with a clear button, or several with removable chips.
+- **Loading and empty states** — separate loading states for searches and additional pages, with skeletons and a field spinner.
+- **Custom rendering** — customize options, selected values, chips, loaders, and empty states.
+- **Keyboard navigation** — powered by Base UI, with support for disabled and invalid fields.
+
+## Why I Built It
+
+I couldn't find an async combobox with infinite scroll that fit my needs, so I built one.
+
+Async Combobox lets you search remote data and keep loading results inside the dropdown. You supply the items and fetching logic; the component handles selection, loading feedback, and when to request the next page.
 
 ## Installation
 
-Install both components from the GitHub registry into a project initialized with
-Base UI shadcn/ui:
+In a project initialized with [shadcn/ui using Base UI](https://ui.shadcn.com), install both variants:
 
 ```bash
-bunx --bun shadcn@latest add hieu-lai/async-combobox/async-comboboxes
+npx shadcn@latest add hieu-lai/async-combobox/async-comboboxes
 ```
 
-Or install either component individually:
+Or install just the one you need:
 
 ```bash
-bunx --bun shadcn@latest add hieu-lai/async-combobox/async-combobox
-bunx --bun shadcn@latest add hieu-lai/async-combobox/async-multi-combobox
+# Single select
+npx shadcn@latest add hieu-lai/async-combobox/async-combobox
+
+# Multi select
+npx shadcn@latest add hieu-lai/async-combobox/async-multi-combobox
 ```
 
-Each item installs its components into your configured UI directory, the
-`useInfiniteScroll` hook into your hooks directory, the supporting UI files, and
-their npm dependencies. With the default aliases, import the components from
-`@/components/ui/async-combobox` and `@/components/ui/async-multi-combobox`.
+The registry installs the component source, shared files, infinite-scroll hook, and supporting dependencies into your project. Imports below use the default shadcn aliases.
 
-The supporting UI components are installed from the official shadcn registry.
-Loading indicators are composed inside the async components, so no changes to
-the standard `combobox.tsx` are required.
-
-Use a React version that supports `useEffectEvent` (the demo uses React 19.3),
-and Tailwind CSS 4 with shadcn theme variables; see [the demo stylesheet](app/globals.css).
-
-### Manual installation
-
-1. In a Base UI shadcn/ui project, install the supporting components and packages:
-
-   ```bash
-   bunx --bun shadcn@latest add combobox skeleton spinner input-group
-   bun add cn @base-ui/react@^1.9.0 lucide-react
-   ```
-
-2. Copy either or both components:
-   - [AsyncCombobox](registry/components/async-combobox.tsx)
-   - [AsyncMultiCombobox](registry/components/async-multi-combobox.tsx)
-3. Copy the shared files required by either component:
-   - [Shared combobox content and props](registry/components/async-combobox-shared.tsx)
-   - [useInfiniteScroll](registry/hooks/use-infinite-scroll.ts)
-
-Adjust the `@/components/...` and `@/registry/...` imports to match your project.
-Use the components inside a client component when working with React Server Components.
+Requires a React version that supports `useEffectEvent`, Tailwind CSS 4, and shadcn theme variables.
 
 ## Usage
 
-Your data layer supplies the search results, loading flags, and pagination callback.
-These wrappers manage selection while leaving fetching to the caller:
+Pass your data layer's results and pagination state into the component:
 
 ```tsx
 'use client'
 
 import { useState } from 'react'
 import { AsyncCombobox } from '@/components/ui/async-combobox'
-import { AsyncMultiCombobox } from '@/components/ui/async-multi-combobox'
 
 type Option = { id: string; name: string }
 
-type SearchResults = {
+type Props = {
   items: Option[]
-  onSearch: (query: string) => void
   isLoading: boolean
   isLoadingMore: boolean
   hasMore: boolean
+  onSearch: (query: string) => void
   onLoadMore: () => void
 }
 
-export function SingleSelect({ onSearch, ...data }: SearchResults) {
-  const [value, setValue] = useState<Option | undefined>()
+export function SearchSelect({ onSearch, ...data }: Props) {
+  const [value, setValue] = useState<Option>()
 
   return (
     <>
-      <label htmlFor="single-option">Choose an option</label>
+      <label htmlFor="search-select">Choose an option</label>
       <AsyncCombobox
         {...data}
-        id="single-option"
+        id="search-select"
         value={value}
         onValueChange={setValue}
         onQueryChange={onSearch}
         itemToStringLabel={(item) => item.name}
         itemToStringValue={(item) => item.id}
         isItemEqualToValue={(item, selected) => item.id === selected.id}
-        className="w-full max-w-xs"
+        scrollThreshold={0.8}
         placeholder="Search options"
+        className="w-full max-w-xs"
       />
     </>
   )
 }
-
-export function MultiSelect({ onSearch, ...data }: SearchResults) {
-  const [value, setValue] = useState<Option[]>([])
-
-  return (
-    <AsyncMultiCombobox
-      {...data}
-      value={value}
-      onValueChange={setValue}
-      onInputValueChange={onSearch}
-      itemToStringLabel={(item) => item.name}
-      itemToStringValue={(item) => item.id}
-      isItemEqualToValue={(item, selected) => item.id === selected.id}
-      className="w-full max-w-xs"
-      placeholder="Search options"
-    />
-  )
-}
 ```
 
-### Connect any fetcher
+Your data layer should:
 
-The components do not make requests, debounce queries, filter items, or cache results.
-Your data layer controls those behaviors:
+- Fetch the first page when the query changes, replace `items`, and reset pagination.
+- Append the next page when `onLoadMore` runs, and set `hasMore` to indicate whether another page exists.
+- Set `isLoading` for a new search and `isLoadingMore` for additional pages. Both pause infinite scrolling.
+- Handle debouncing, caching, errors, and stale responses as needed. The component displays the items you supply without filtering them.
 
-| Event or state  | What your data layer should do                              |
-| --------------- | ----------------------------------------------------------- |
-| Search callback | Fetch the first page for the new query and replace `items`. |
-| `onLoadMore`    | Fetch the next page and append it to `items`.               |
-| `isLoading`     | Set while loading the first page or a new search.           |
-| `isLoadingMore` | Set while fetching an additional page.                      |
-| `hasMore`       | Indicate whether another page is available.                 |
+For multiple selection, use `AsyncMultiCombobox` from `@/components/ui/async-multi-combobox`, keep an array as the value, and connect search through `onInputValueChange`.
 
-Keep previously loaded items in `items` to retain them while loading, or pass an
-empty array to show the initial loader. Reset pagination when the query changes,
-and ignore stale responses when searches overlap. The optional
-[useDebounce](registry/hooks/use-debounce.ts) hook can reduce search requests.
-When debouncing, include the pending debounce in `isLoading` (for example,
-`query !== debouncedQuery || isFetching`) so the loading indicator stays visible
-until results for the latest query arrive.
+See the [single-select example](app/single-example.tsx), [multi-select example](app/multi-example.tsx), and [custom rendering example](app/custom-example.tsx) for complete integrations.
 
-## Customization
+## Built With
 
-| Prop                        | Purpose                                                                                             |
-| --------------------------- | --------------------------------------------------------------------------------------------------- |
-| `renderItem`                | Render a custom `ComboboxItem` with a stable key and `value={item}`.                                |
-| `renderValue`               | Customize the single-select value with single-line, non-interactive content.                        |
-| `renderChip`                | Render a custom `ComboboxChip` for multi-select values.                                             |
-| `renderEmpty`               | Return a custom `ComboboxEmpty`, or `null` to hide the empty state.                                 |
-| `renderLoading`             | Replace the default skeleton rows shown when loading with no items.                                 |
-| `renderLoadingMore`         | Add non-selectable content below the options while loading another page.                            |
-| `scrollThreshold`           | Load earlier using a fraction, percentage, or pixel distance, such as `0.8`, `'80%'`, or `'100px'`. |
-| `className`                 | Set the field width; the dropdown follows it.                                                       |
-| `disabled` / `aria-invalid` | Disable the field or mark it invalid.                                                               |
+- [Base UI](https://base-ui.com) — combobox behavior and keyboard interactions.
+- [shadcn/ui](https://ui.shadcn.com) — UI components and source distribution.
+- [React](https://react.dev), [TypeScript](https://www.typescriptlang.org), and [Tailwind CSS](https://tailwindcss.com).
 
-Import `ComboboxItem`, `ComboboxChip`, and `ComboboxEmpty` from
-`@/components/ui/combobox`. Both loading states suppress the empty message and
-pause infinite scrolling.
+---
 
-See the [custom single-select example](app/custom-example.tsx) and
-[custom multi-select example](app/custom-multi-example.tsx) for options, selected
-values, and chips with avatars and custom loaders.
-
-## Publishing the GitHub registry
-
-The root [registry.json](registry.json) defines the combined `async-comboboxes`
-item and the two individual component items. The combined item lists both
-component files and one copy of the shared hook in its `files` array.
-Each item declares the official shadcn components in `registryDependencies`.
-The CLI reads the async components and hook directly from GitHub;
-no registry server, GitHub Pages site, npm publication, or generated JSON files
-are needed. See the [shadcn GitHub registry docs](https://ui.shadcn.com/docs/registry/github).
-
-1. Validate the local source registry:
-
-   ```bash
-   bunx --bun shadcn@latest registry validate ./registry.json
-   ```
-
-2. Commit and push `registry.json` and its referenced source files to the default
-   branch of `hieu-lai/async-combobox`. Keep the repository public for users to
-   install without GitHub credentials.
-3. Verify the published registry:
-
-   ```bash
-   bunx --bun shadcn@latest registry validate hieu-lai/async-combobox
-   bunx --bun shadcn@latest list hieu-lai/async-combobox
-   bunx --bun shadcn@latest view hieu-lai/async-combobox/async-comboboxes
-   ```
-
-Unpinned installs use the repository's default branch. To publish a stable
-release, push a Git tag and append it to the install address, for example
-`hieu-lai/async-combobox/async-comboboxes#v1.0.0`. The tag must contain the registry
-manifest and all its referenced files.
+<p align="center">Made by <a href="https://github.com/hieu-lai">Hieu Lai</a></p>
